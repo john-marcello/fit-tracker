@@ -104,67 +104,67 @@ async function createInitialUsers() {
     }
 }
 
-// async function createInitialRoutines() {
-//     try {
-//         const [johndoe, suziequeue, marysample] = await getAllUsers();
-//         console.log("Starting to create routines...");
-//         await createRoutine({
-//             creatorId: johndoe.id,
-//             name: 'The Punisher',
-//             goal: 'Run five miles without throwing up.',
-//             activities: [ 
-//                 {name: 'stop', description: 'Stop right there.'},
-//                 {name: 'drop', description: 'Drop and give me 20.'},
-//                 {name: 'roll', description: 'Keep on rolling.'} 
-//             ]
-//         });
-//         await createRoutine({
-//             creatorId: suziequeue.id,
-//             name: "How You Like Me Now?",
-//             goal: "1000 Squat Thrusts",
-//             activities: [ 
-//                 {name: 'stop', description: 'Stop right there.'},
-//                 {name: 'drop', description: 'Drop and give me 20.'},
-//                 {name: 'roll', description: 'Keep on rolling.'} 
-//             ]
-//         });
-//         await createRoutine({
-//             creatorId: marysample.id,
-//             name: "You Want Fries With That?",
-//             goal: "100 crunches and 100 handstand pushups",
-//             activities: [ 
-//                 {name: 'stop', description: 'Stop right there.'},
-//                 {name: 'drop', description: 'Drop and give me 20.'},
-//                 {name: 'roll', description: 'Keep on rolling.'} 
-//             ]
-//         });
-//         console.log("Finished creating routines!");
-//     } catch (error) {
-//         console.log("Error creating routines!");
-//         throw error;
-//     }
-// }
+async function createInitialRoutines() {
+    try {
+        const [johndoe, suziequeue, marysample] = await getAllUsers();
+        console.log("Starting to create routines...");
+        await createRoutine({
+            creatorId: johndoe.id,
+            name: 'The Punisher',
+            goal: 'Run five miles without throwing up.',
+            activities: [ 
+                {name: 'stop', description: 'Stop right there.'},
+                {name: 'drop', description: 'Drop and give me 20.'},
+                {name: 'roll', description: 'Keep on rolling.'} 
+            ]
+        });
+        await createRoutine({
+            creatorId: suziequeue.id,
+            name: "How You Like Me Now?",
+            goal: "1000 Squat Thrusts",
+            activities: [ 
+                {name: 'stop', description: 'Stop right there.'},
+                {name: 'drop', description: 'Drop and give me 20.'},
+                {name: 'roll', description: 'Keep on rolling.'} 
+            ]
+        });
+        await createRoutine({
+            creatorId: marysample.id,
+            name: "You Want Fries With That?",
+            goal: "100 crunches and 100 handstand pushups",
+            activities: [ 
+                {name: 'stop', description: 'Stop right there.'},
+                {name: 'drop', description: 'Drop and give me 20.'},
+                {name: 'roll', description: 'Keep on rolling.'} 
+            ]
+        });
+        console.log("Finished creating routines!");
+    } catch (error) {
+        console.log("Error creating routines!");
+        throw error;
+    }
+}
 
-// async function createInitialActivities() {
+async function createInitialActivities() {
     
-//     const actArr = [
-//         { name: 'stop', description: 'Stop right there.' },
-//         { name: 'drop', description: 'Drop and give me 20.' },
-//         { name: 'roll', description: 'Keep on rolling.'} 
-//     ]
-//     try {
-//         console.log("starting to create activities...")
-//         const activity = await Promise.all(
-//             actArr.map(act => {
-//                 createActivities(act.name, act.description)
-//             })
-//         )
-//         console.log("finished creating activities")
-//     } catch (error) {
-//         console.log("error creating activities...")
-//         throw error
-//     }
-// }
+    const actArr = [
+        { name: 'stop', description: 'Stop right there.' },
+        { name: 'drop', description: 'Drop and give me 20.' },
+        { name: 'roll', description: 'Keep on rolling.'} 
+    ]
+    try {
+        console.log("starting to create activities...")
+        const activity = await Promise.all(
+            actArr.map(act => {
+                createActivities(act.name, act.description)
+            })
+        )
+        console.log("finished creating activities")
+    } catch (error) {
+        console.log("error creating activities...")
+        throw error
+    }
+}
 
 async function testDB() {
     try {
@@ -180,28 +180,28 @@ async function testDB() {
         });
         console.log('Result:', updateUserResult);
 
-        // console.log('Calling getAllRoutines');
-        // const routines = await getAllRoutines();
-        // console.log('Result:', routines);
+        console.log('Calling getAllRoutines');
+        const routines = await getAllRoutines();
+        console.log('Result:', routines);
         
-        // console.log("Calling updateRoutine on routines[1], only updating activities");
-        // const updateRoutineActivitiesResult = await updateRoutine(routines[0].id, {
-        //     activities: [ 
-        //         {name: 'go', description: 'Go for it.'},
-        //         {name: 'do', description: 'Just do it.'},
-        //         {name: 'be', description: 'Be one with the force.'} 
-        //     ]
-        // });
-        // console.log("Result:", updateRoutineActivitiesResult);
+        console.log("Calling updateRoutine on routines[1], only updating activities");
+        const updateRoutineActivitiesResult = await updateRoutine(routines[0].id, {
+            activities: [ 
+                {name: 'go', description: 'Go for it.'},
+                {name: 'do', description: 'Just do it.'},
+                {name: 'be', description: 'Be one with the force.'} 
+            ]
+        });
+        console.log("Result:", updateRoutineActivitiesResult);
 
-        // console.log('Calling getUserById with 1');
-        // const albert = await getUserById(1);
-        // console.log('Result:', johndoe);
-        // console.log('Finished database tests!');
+        console.log('Calling getUserById with 1');
+        const albert = await getUserById(1);
+        console.log('Result:', johndoe);
+        console.log('Finished database tests!');
 
-        // console.log("Calling getRoutinesByActivityName with stop");
-        // const postsWithStop = await getRoutinesByActivityName("stop");
-        // console.log("Result:", postsWithStop);
+        console.log("Calling getRoutinesByActivityName with stop");
+        const postsWithStop = await getRoutinesByActivityName("stop");
+        console.log("Result:", postsWithStop);
 
     } catch (error) {
         console.log('Error during testDB');
@@ -215,8 +215,8 @@ async function rebuildDB() {
         await dropTables();
         await createTables();
         await createInitialUsers();
-        // await createInitialRoutines();
-        // await createInitialActivities();
+        await createInitialRoutines();
+        await createInitialActivities();
     } catch (error) {
       console.log("Error during rebuildDB")
       throw error;
