@@ -1,33 +1,18 @@
 const client = require('./client.js');
 
 const { 
-    getAllUsers, 
-    createUser, 
-    updateUser 
-} = require('./users');
-
-const { 
-    getAllActivities, 
-    createActivities, 
-    updateActivity 
-} = require('./activities.js');
-
-const { 
-    getAllRoutines, 
-    getPublicRoutines, 
-    getAllRoutinesByUsers, 
-    getPublicRoutinesByUser, 
-    getAllRoutinesByActivity, 
-    createRoutine, 
-    updateRotuine, 
-    destroyRoutine 
-} = require('./routines');
-
-const { 
-    addActivityToRoutine, 
-    updateRoutineActivity, 
-    destroyRoutineActivity 
-} = require('./routine_activities');
+    getAllUsers,
+    createUser,
+    getUser,
+    updateUser,
+    getAllRoutines,
+    createRoutine,
+    updateRoutine,
+    getAllActivities,
+    createActivity,
+    updateActivity,
+    addActivitiesToRoutine
+} = require('./index.js')
 
 async function dropTables() {
     try {
@@ -108,35 +93,31 @@ async function createInitialRoutines() {
     try {
         const [johndoe, suziequeue, marysample] = await getAllUsers();
         console.log("Starting to create routines...");
-        await createRoutine({
+        const testRoutine = await createRoutine({
             creatorId: johndoe.id,
             name: 'The Punisher',
             goal: 'Run five miles without throwing up.',
-            activities: [ 
-                {name: 'stop', description: 'Stop right there.'},
-                {name: 'drop', description: 'Drop and give me 20.'},
-                {name: 'roll', description: 'Keep on rolling.'} 
-            ]
         });
+
+        const activityList = await createInitialActivities();
+        console.log(activityList, 'activity list');
+        // const activityList = await Promise.all(
+        //     activities.map(activity => {
+        //         return createActivity(activity.name, activity.description);
+        //     })
+        // );
+
+        await addActivitiesToRoutine(testRoutine.id, activityList);
+
         await createRoutine({
             creatorId: suziequeue.id,
             name: "How You Like Me Now?",
             goal: "1000 Squat Thrusts",
-            activities: [ 
-                {name: 'stop', description: 'Stop right there.'},
-                {name: 'drop', description: 'Drop and give me 20.'},
-                {name: 'roll', description: 'Keep on rolling.'} 
-            ]
         });
         await createRoutine({
             creatorId: marysample.id,
             name: "You Want Fries With That?",
             goal: "100 crunches and 100 handstand pushups",
-            activities: [ 
-                {name: 'stop', description: 'Stop right there.'},
-                {name: 'drop', description: 'Drop and give me 20.'},
-                {name: 'roll', description: 'Keep on rolling.'} 
-            ]
         });
         console.log("Finished creating routines!");
     } catch (error) {
@@ -156,10 +137,11 @@ async function createInitialActivities() {
         console.log("starting to create activities...")
         const activity = await Promise.all(
             actArr.map(act => {
-                createActivities(act.name, act.description)
+                return createActivity(act.name, act.description)
             })
         )
         console.log("finished creating activities")
+        return activity;
     } catch (error) {
         console.log("error creating activities...")
         throw error
@@ -170,38 +152,44 @@ async function testDB() {
     try {
 
         console.log('Starting to test database...');
+
         console.log('Calling getAllUsers');
-        const users = await getAllUsers();
+            const users = await getAllUsers();
         console.log('Result:', users,);
         
+        console.log('Calling getUser on users[0]');
+            const getUserResult = await getUser({
+                username: 'johndoe'
+            });
+        console.log('Result:', getUserResult);
+
         console.log('Calling updateUser on users[0]');
-        const updateUserResult = await updateUser(users[0].id, {
-            username: 'johndeere'
-        });
+            const updateUserResult = await updateUser(users[0].id, {
+                username: 'johndeere'
+            });
         console.log('Result:', updateUserResult);
 
         console.log('Calling getAllRoutines');
-        const routines = await getAllRoutines();
+            const routines = await getAllRoutines();
         console.log('Result:', routines);
         
-        console.log("Calling updateRoutine on routines[1], only updating activities");
-        const updateRoutineActivitiesResult = await updateRoutine(routines[0].id, {
-            activities: [ 
-                {name: 'go', description: 'Go for it.'},
-                {name: 'do', description: 'Just do it.'},
-                {name: 'be', description: 'Be one with the force.'} 
-            ]
-        });
-        console.log("Result:", updateRoutineActivitiesResult);
+        console.log("Calling updateRoutine on routines[0], only updating activities");
+            const updateRoutineResult = await updateRoutine(routines[0].id, {
+                public: true, name: 'The New Punisher', goal: 'Something Different',
+            });
+        console.log("Result:", updateRoutineResult);
 
-        console.log('Calling getUserById with 1');
-        const albert = await getUserById(1);
-        console.log('Result:', johndoe);
-        console.log('Finished database tests!');
+        console.log('Calling getAllActivities');
+            const activities = await getAllActivities();
+        console.log('Result:', activities);
 
-        console.log("Calling getRoutinesByActivityName with stop");
-        const postsWithStop = await getRoutinesByActivityName("stop");
-        console.log("Result:", postsWithStop);
+        console.log('Calling updateActivities');
+            const updateActivityResult = await updateActivity(activities[0].id, {
+                name: 'Another One', description: 'This bites the dust.'
+            });
+        console.log('will you update?', updateActivityResult);
+
+        console.log('End test database...');
 
     } catch (error) {
         console.log('Error during testDB');

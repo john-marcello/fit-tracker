@@ -1,21 +1,32 @@
-const client = require('./client.js')
+const client = require('./client.js');
 
-// addActivityToRoutine
+const { getRoutineById } = require('./routines.js');
 
-// addActivityToRoutine({ routineId, activityId, count, duration })
-// create a new routine_activity, and return it
+async function createRoutineActivity(routineId, activityId) {
+    try {
+        await client.query(`
+            INSERT INTO routine_activities("routineId", "activityId")
+            VALUES ($1, $2)
+            ON CONFLICT ("routineId", "activityId") DO NOTHING;
+        `, [routineId, activityId]);
+    } catch (error) {
+        throw error;
+    }
+}
 
-// updateRoutineActivity
-
-// updateRoutineActivity({ id, count, duration })
-// Find the routine with id equal to the passed in id
-// Update the count or duration as necessary
-
-// destroyRoutineActivity
-
-// destroyRoutineActivity(id)
-// remove routine_activity from database
+async function addActivitiesToRoutine(routineId, activityList) {
+    try {
+        const createActivitiesList = activityList.map(
+            activity => createRoutineActivity(routineId, activity.id)
+        );
+        await Promise.all(createActivitiesList);
+        return await getRoutineById(routineId);
+    } catch (error) {
+        throw error;
+    }
+}
 
 module.exports = {
-
+    createRoutineActivity,
+    addActivitiesToRoutine
 }

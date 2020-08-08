@@ -19,10 +19,24 @@ async function createUser({ username, password }) {
     }
 }
 
+async function getUser({ username }) {
+    try {
+        const { rows: [user] } = await client.query(`
+            SELECT *
+            FROM users
+            WHERE username=$1
+        `, [username]);
+        return user;
+    } catch (error) {
+        throw error;
+    }
+}
+
 async function updateUser(id, fields = {}) {
     const setString = Object.keys(fields)
         .map((key, index) => `"${key}"=$${index + 1}`)
         .join(', ');
+
     if (setString.length === 0) {
         return;
     }
@@ -39,8 +53,10 @@ async function updateUser(id, fields = {}) {
     }
 }
 
+
 module.exports = {
     getAllUsers,
     createUser,
+    getUser,
     updateUser
 }
