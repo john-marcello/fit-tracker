@@ -6,6 +6,10 @@ const {
     getUser,
     updateUser,
     getAllRoutines,
+    getPublicRoutines,
+    getRoutinesByUser,
+    getPublicRoutinesByUser,
+    getPublicRoutinesByActivity,
     createRoutine,
     updateRoutine,
     getAllActivities,
@@ -92,34 +96,32 @@ async function createInitialUsers() {
 async function createInitialRoutines() {
     try {
         const [johndoe, suziequeue, marysample] = await getAllUsers();
+        
         console.log("Starting to create routines...");
-        const testRoutine = await createRoutine({
+        const testJohn = await createRoutine({
             creatorId: johndoe.id,
             name: 'The Punisher',
             goal: 'Run five miles without throwing up.',
         });
 
-        const activityList = await createInitialActivities();
-        console.log(activityList, 'activity list');
-        // const activityList = await Promise.all(
-        //     activities.map(activity => {
-        //         return createActivity(activity.name, activity.description);
-        //     })
-        // );
-
-        await addActivitiesToRoutine(testRoutine.id, activityList);
-
-        await createRoutine({
+        const testSuzie = await createRoutine({
             creatorId: suziequeue.id,
             name: "How You Like Me Now?",
             goal: "1000 Squat Thrusts",
         });
-        await createRoutine({
+        const testMary = await createRoutine({
             creatorId: marysample.id,
             name: "You Want Fries With That?",
             goal: "100 crunches and 100 handstand pushups",
         });
+
+        const activityList = await createInitialActivities();
+        await addActivitiesToRoutine(testJohn.id, activityList);
+        await addActivitiesToRoutine(testSuzie.id, activityList);
+        await addActivitiesToRoutine(testMary.id, activityList);
+
         console.log("Finished creating routines!");
+        
     } catch (error) {
         console.log("Error creating routines!");
         throw error;
@@ -153,15 +155,18 @@ async function testDB() {
 
         console.log('Starting to test database...');
 
+
         console.log('Calling getAllUsers');
             const users = await getAllUsers();
         console.log('Result:', users,);
         
+
         console.log('Calling getUser on users[0]');
             const getUserResult = await getUser({
                 username: 'johndoe'
             });
         console.log('Result:', getUserResult);
+
 
         console.log('Calling updateUser on users[0]');
             const updateUserResult = await updateUser(users[0].id, {
@@ -169,19 +174,49 @@ async function testDB() {
             });
         console.log('Result:', updateUserResult);
 
+
         console.log('Calling getAllRoutines');
             const routines = await getAllRoutines();
         console.log('Result:', routines);
         
+
         console.log("Calling updateRoutine on routines[0], only updating activities");
             const updateRoutineResult = await updateRoutine(routines[0].id, {
                 public: true, name: 'The New Punisher', goal: 'Something Different',
             });
         console.log("Result:", updateRoutineResult);
 
+
+        console.log('Calling getPublicRoutines');
+            const publicRoutines = await getPublicRoutines();
+        console.log('Result:', publicRoutines);
+
+
+        console.log('Calling getRoutinesByUser on routines[0]');
+            const getRoutinesByUserResult = await getRoutinesByUser({ 
+                username: 'johndeere' 
+            });
+        console.log('Result:', getRoutinesByUserResult);
+
+
+        console.log('Calling getPublicRoutinesByUser on routines[0]');
+            const getPublicRoutinesByUserResult = await getPublicRoutinesByUser({ 
+                username: 'johndeere' 
+            });
+        console.log('Result:', getPublicRoutinesByUserResult);
+
+
+        console.log('Calling getPublicRoutinesByActivity on routines[0]');
+            const getPublicRoutinesByActivityResult = await getPublicRoutinesByActivity({ 
+                name: 'stop' 
+            });
+        console.log('Result:', getPublicRoutinesByActivityResult);
+
+
         console.log('Calling getAllActivities');
             const activities = await getAllActivities();
         console.log('Result:', activities);
+
 
         console.log('Calling updateActivities');
             const updateActivityResult = await updateActivity(activities[0].id, {
@@ -189,7 +224,9 @@ async function testDB() {
             });
         console.log('will you update?', updateActivityResult);
 
+
         console.log('End test database...');
+
 
     } catch (error) {
         console.log('Error during testDB');

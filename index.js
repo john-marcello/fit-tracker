@@ -13,7 +13,7 @@ const server = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan'); 
 const apiRouter = require('./api');
-const { client } = require('./db/client.js.js.js');
+const { client } = require('./db/client.js');
 
 // set up middle ware
 

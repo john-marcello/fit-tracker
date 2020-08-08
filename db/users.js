@@ -53,7 +53,6 @@ async function updateUser(id, fields = {}) {
     }
 }
 
-
 module.exports = {
     getAllUsers,
     createUser,
