@@ -12,10 +12,14 @@ const {
     getPublicRoutinesByActivity,
     createRoutine,
     updateRoutine,
+    destroyRoutine,
     getAllActivities,
     createActivity,
     updateActivity,
-    addActivitiesToRoutine
+    getAllRoutineActivities,
+    updateRoutineActivity,
+    destroyRoutineActivity,
+    addActivityToRoutine
 } = require('./index.js')
 
 async function dropTables() {
@@ -100,28 +104,31 @@ async function createInitialRoutines() {
         console.log("Starting to create routines...");
         const testJohn = await createRoutine({
             creatorId: johndoe.id,
+            public: false,
             name: 'The Punisher',
             goal: 'Run five miles without throwing up.',
         });
 
         const testSuzie = await createRoutine({
             creatorId: suziequeue.id,
+            public: false,
             name: "How You Like Me Now?",
             goal: "1000 Squat Thrusts",
         });
         const testMary = await createRoutine({
             creatorId: marysample.id,
+            public: false,
             name: "You Want Fries With That?",
             goal: "100 crunches and 100 handstand pushups",
         });
 
         const activityList = await createInitialActivities();
-        await addActivitiesToRoutine(testJohn.id, activityList);
-        await addActivitiesToRoutine(testSuzie.id, activityList);
-        await addActivitiesToRoutine(testMary.id, activityList);
+        await addActivityToRoutine(testJohn.id, activityList);
+        await addActivityToRoutine(testSuzie.id, activityList);
+        await addActivityToRoutine(testMary.id, activityList);
 
         console.log("Finished creating routines!");
-        
+
     } catch (error) {
         console.log("Error creating routines!");
         throw error;
@@ -208,7 +215,7 @@ async function testDB() {
 
         console.log('Calling getPublicRoutinesByActivity on routines[0]');
             const getPublicRoutinesByActivityResult = await getPublicRoutinesByActivity({ 
-                name: 'stop' 
+                activityId: 1
             });
         console.log('Result:', getPublicRoutinesByActivityResult);
 
@@ -222,7 +229,31 @@ async function testDB() {
             const updateActivityResult = await updateActivity(activities[0].id, {
                 name: 'Another One', description: 'This bites the dust.'
             });
-        console.log('will you update?', updateActivityResult);
+        console.log('Result:', updateActivityResult);
+
+        console.log('Calling getAllRoutineActivities');
+            const getAllRoutineActsResult = await getAllRoutineActivities();
+        console.log('Result:', getAllRoutineActsResult);
+        
+        console.log('Calling updateRoutineActivity');
+            const updateRoutineActivityResult = await updateRoutineActivity(routines[0].id, {
+                duration: 10, count: 100
+            });
+        console.log('Result:', updateRoutineActivityResult);
+
+
+        console.log('Calling destroyRoutine on routines[0]');
+            const destroyRoutineResult = await destroyRoutine(routines[0].id);
+            const deletedRoutineResult = await getAllRoutines();
+        console.log('Result:', destroyRoutineResult);
+        console.log('Result:', deletedRoutineResult);
+
+
+        console.log('Calling destroyRoutineActivities on routines[1]');
+            const destroyRoutineActsResult = await destroyRoutineActivity(routines[1].id);
+            const deletedRoutineActsResult = await getAllRoutineActivities();
+        console.log('Result:', destroyRoutineActsResult);
+        console.log('Result:', deletedRoutineActsResult);
 
 
         console.log('End test database...');

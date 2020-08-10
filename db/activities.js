@@ -1,5 +1,16 @@
 const client = require('./client.js');
 
+async function getAllActivities() {
+    try {
+        const { rows } = await client.query(`
+            SELECT * FROM activities;
+        `);
+        return rows;
+    } catch (error) {
+      throw error;
+    }
+}
+
 async function createActivity(name, description) {
     try {
         await client.query(`
@@ -37,20 +48,8 @@ async function updateActivity(activityId, fields = {}) {
     }
 }
 
-async function getAllActivities() {
-    try {
-        const { rows } = await client.query(`
-            SELECT * FROM activities;
-        `);
-        return rows;
-    } catch (error) {
-      throw error;
-    }
-}
-
-
 module.exports = {
+    getAllActivities,
     createActivity,
-    updateActivity,
-    getAllActivities
+    updateActivity
 }
