@@ -1,4 +1,5 @@
 const client = require('./client.js');
+const bcrypt = require('bcrypt');
 
 async function getAllUsers() {
     const { rows } = await client.query(`SELECT id, username FROM users;`);
@@ -19,13 +20,17 @@ async function createUser({ username, password }) {
     }
 }
 
-async function getUser({ username }) {
+async function getUser({ username, password }) {
     try {
         const { rows: [user] } = await client.query(`
             SELECT *
             FROM users
-            WHERE username=$1
+            WHERE username=$1;
         `, [username]);
+        // const matchingPassword = bcrypt.compareSync(password, user.password)
+        // if (!matchingPassword) {
+        //     return
+        // }
         return user;
     } catch (error) {
         throw error;

@@ -115,6 +115,7 @@ async function createInitialRoutines() {
             name: "How You Like Me Now?",
             goal: "1000 Squat Thrusts",
         });
+        
         const testMary = await createRoutine({
             creatorId: marysample.id,
             public: false,
