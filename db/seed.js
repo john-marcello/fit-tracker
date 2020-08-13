@@ -111,14 +111,14 @@ async function createInitialRoutines() {
 
         const testSuzie = await createRoutine({
             creatorId: suziequeue.id,
-            public: false,
+            public: true,
             name: "How You Like Me Now?",
             goal: "1000 Squat Thrusts",
         });
         
         const testMary = await createRoutine({
             creatorId: marysample.id,
-            public: false,
+            public: true,
             name: "You Want Fries With That?",
             goal: "100 crunches and 100 handstand pushups",
         });

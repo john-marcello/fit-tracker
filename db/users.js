@@ -20,7 +20,7 @@ async function createUser({ username, password }) {
     }
 }
 
-async function getUser({ username, password }) {
+async function getUser({ username }) {
     try {
         const { rows: [user] } = await client.query(`
             SELECT *
@@ -33,6 +33,7 @@ async function getUser({ username, password }) {
         // }
         return user;
     } catch (error) {
+        console.error(error);
         throw error;
     }
 }
