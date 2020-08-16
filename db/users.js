@@ -27,10 +27,26 @@ async function getUser({ username }) {
             FROM users
             WHERE username=$1;
         `, [username]);
-        // const matchingPassword = bcrypt.compareSync(password, user.password)
-        // if (!matchingPassword) {
-        //     return
-        // }
+
+        return user;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+async function getUserById(id) {
+    try {
+        const { rows } = await client.query(`
+            SELECT *
+            FROM users
+            WHERE id=$1;
+        `, [id]);
+
+        if(!rows || rows.length === 0) {
+            return null;
+        }
+        const [user] = rows;
         return user;
     } catch (error) {
         console.error(error);
@@ -63,5 +79,6 @@ module.exports = {
     getAllUsers,
     createUser,
     getUser,
+    getUserById,
     updateUser
 }

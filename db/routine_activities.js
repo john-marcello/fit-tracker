@@ -12,6 +12,20 @@ async function getAllRoutineActivities() {
     }
 }
 
+async function getRoutineActivityById(routineId) {
+    try {
+        const { rows: routeAct } = await client.query(`
+            SELECT * 
+            FROM routine_activities
+            WHERE id=$1;
+        `, [routineId]);
+        return routeAct;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 async function createRoutineActivity(routineId, activityId, duration, count) {
     try {
         await client.query(`
@@ -32,13 +46,13 @@ async function updateRoutineActivity(routineId, fields = {}) {
         return;
     }
     try {
-        const { rows: [routine_acts] } = await client.query(`
+        const { rows: [routineActs] } = await client.query(`
             UPDATE routine_activities
             SET ${ setString}
             WHERE id=${ routineId }
             RETURNING *;
         `, Object.values(fields));
-        return routine_acts;
+        return routineActs;
     } catch (error) {
         throw error;
     }
@@ -58,11 +72,10 @@ async function addActivityToRoutine(routineId, activityList) {
 
 async function destroyRoutineActivity(id) {
     try {
-
         await client.query(`
             DELETE FROM "routine_activities" 
-            WHERE "routineId"=${id};
-        `);
+            WHERE "routineId"=$1;
+        `, [id] );
         return true;
     } catch (error) {
         throw error;
@@ -71,6 +84,7 @@ async function destroyRoutineActivity(id) {
 
 module.exports = {
     getAllRoutineActivities,
+    getRoutineActivityById,
     createRoutineActivity,
     updateRoutineActivity,
     destroyRoutineActivity,

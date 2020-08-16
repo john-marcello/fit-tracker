@@ -1,5 +1,6 @@
 const client = require('./client.js');
 
+
 async function getAllActivities() {
     try {
         const { rows } = await client.query(`
@@ -10,6 +11,25 @@ async function getAllActivities() {
       throw error;
     }
 }
+
+
+async function getActivityById(id) {
+    try {
+        const { rows } = await client.query(`
+            SELECT *
+            FROM activities
+            WHERE id=$1;
+        `, [id]);
+        if (!rows || rows.length === 0) {
+            return null
+        }
+        const [activities] = rows
+        return activities
+    } catch (error) {
+        throw error
+    }
+}
+
 
 async function createActivity(name, description) {
     try {
@@ -48,8 +68,10 @@ async function updateActivity(activityId, fields = {}) {
     }
 }
 
+
 module.exports = {
     getAllActivities,
+    getActivityById,
     createActivity,
     updateActivity
 }
